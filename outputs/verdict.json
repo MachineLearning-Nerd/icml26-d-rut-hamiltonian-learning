@@ -1,0 +1,37 @@
+{
+  "c1_heisenberg": {
+    "passed": true,
+    "slope_heis": -0.9698548808683377,
+    "slope_sql": -0.4621345579190739
+  },
+  "c2_single_mode": {
+    "passed": true,
+    "slope": -1.1820633284456643
+  },
+  "c3_spam_bound": {
+    "passed": true,
+    "sigma_min_K": 2.4494897427831774,
+    "max_dg": 0.13660589864604036,
+    "max_bound": 0.2128860777851197
+  },
+  "c4_covariance": {
+    "passed": true,
+    "tr_hier": 0.0075000000000000015,
+    "tr_sim": 0.0075000000000000015
+  },
+  "c5_bisection": {
+    "passed": true,
+    "slope": 0.07765114435016006,
+    "iters": [
+      8,
+      15,
+      21,
+      28,
+      35
+    ]
+  },
+  "c6_chebyshev": {
+    "passed": true,
+    "recovery_err": 2.220446049250313e-16
+  }
+}
