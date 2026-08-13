@@ -166,11 +166,14 @@ banner("VERDICT SUMMARY")
 passed = sum(1 for r in results.values() if r.get("passed"))
 for k_, r in results.items():
     print(f"  [{'PASS' if r.get('passed') else 'FAIL'}] {k_}")
-print(f"\n  {passed}/{len(results)} claims verified.")
+print(f"\n  {passed}/{len(results)} finite diagnostics passed; paper claims independently verified: 0/{len(results)}.")
 payload = {
     "scope": "bounded_clean_room_proxies",
     "paper_reproduction": "inconclusive",
     "interpretation": "passed means the finite local check passed; it does not prove the paper claim.",
+    "finite_proxy_diagnostics_passed": passed,
+    "finite_proxy_diagnostics_total": len(results),
+    "paper_claims_verified": 0,
     "claims": results,
 }
 json.dump(payload, open(os.path.join(OUT, "verdict.json"), "w"), indent=2)

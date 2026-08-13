@@ -2,6 +2,9 @@
   "scope": "bounded_clean_room_proxies",
   "paper_reproduction": "inconclusive",
   "interpretation": "passed means the finite local check passed; it does not prove the paper claim.",
+  "finite_proxy_diagnostics_passed": 6,
+  "finite_proxy_diagnostics_total": 6,
+  "paper_claims_verified": 0,
   "claims": {
     "c1_heisenberg": {
       "passed": true,

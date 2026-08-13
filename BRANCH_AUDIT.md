@@ -33,3 +33,7 @@ main → canonical documentation and bounded classical D-RUT proxy audit
 ```
 
 No branch is presented as an official quantum implementation or as an independent paper result. Migration is complete only when GitHub reports `main` as the default and `master` is absent.
+
+## Live verification
+
+The final remote audit confirmed repository name `icml26-d-rut-hamiltonian-learning`, default branch `main`, sole remote branch `main`, canonical paper homepage, README and gate publication, and MachineLearning-Nerd as both author and committer on all reachable commits.

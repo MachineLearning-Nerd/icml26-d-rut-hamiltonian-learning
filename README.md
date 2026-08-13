@@ -6,7 +6,7 @@ The repository contains small NumPy surrogates for the classical recovery geomet
 
 | Resource | Link |
 | --- | --- |
-| Paper | [arXiv:2510.08419](https://arxiv.org/abs/2510.08419) |
+| Audit source | [arXiv:2510.08419v2](https://arxiv.org/abs/2510.08419v2), revised 2026-05-29 |
 | Paper HTML | [arXiv HTML v2](https://arxiv.org/html/2510.08419v2) |
 | OpenReview record | [tiF3tA5pau](https://openreview.net/forum?id=tiF3tA5pau) |
 | Repository target name | `MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning` |

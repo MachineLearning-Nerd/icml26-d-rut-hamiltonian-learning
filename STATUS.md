@@ -1,6 +1,6 @@
 # Status — icml26-d-rut-hamiltonian-learning
 
-- **Paper:** [Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation](https://arxiv.org/abs/2510.08419)
+- **Paper:** [Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation](https://arxiv.org/abs/2510.08419v2), revised 2026-05-29
 - **Short name:** D-RUT
 - **OpenReview:** `tiF3tA5pau`
 - **Paper-level reproduction:** **inconclusive / partial**
