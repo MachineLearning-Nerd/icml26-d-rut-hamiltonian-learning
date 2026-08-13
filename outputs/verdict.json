@@ -1,37 +1,59 @@
 {
-  "c1_heisenberg": {
-    "passed": true,
-    "slope_heis": -0.9698548808683377,
-    "slope_sql": -0.4621345579190739
-  },
-  "c2_single_mode": {
-    "passed": true,
-    "slope": -1.1820633284456643
-  },
-  "c3_spam_bound": {
-    "passed": true,
-    "sigma_min_K": 2.4494897427831774,
-    "max_dg": 0.13660589864604036,
-    "max_bound": 0.2128860777851197
-  },
-  "c4_covariance": {
-    "passed": true,
-    "tr_hier": 0.0075000000000000015,
-    "tr_sim": 0.0075000000000000015
-  },
-  "c5_bisection": {
-    "passed": true,
-    "slope": 0.07765114435016006,
-    "iters": [
-      8,
-      15,
-      21,
-      28,
-      35
-    ]
-  },
-  "c6_chebyshev": {
-    "passed": true,
-    "recovery_err": 2.220446049250313e-16
+  "scope": "bounded_clean_room_proxies",
+  "paper_reproduction": "inconclusive",
+  "interpretation": "passed means the finite local check passed; it does not prove the paper claim.",
+  "claims": {
+    "c1_heisenberg": {
+      "passed": true,
+      "slope_heis": -0.9698548808684695,
+      "slope_sql": -0.4621345579190784,
+      "paper_claim_directly_tested": false
+    },
+    "c2_single_mode": {
+      "passed": true,
+      "slope": -1.1820633284457327,
+      "paper_claim_directly_tested": false
+    },
+    "c3_spam_bound": {
+      "passed": true,
+      "sigma_min_K": 2.449489742783178,
+      "max_dg": 0.13660589864604036,
+      "max_bound": 0.21288607778511967,
+      "paper_claim_directly_tested": false
+    },
+    "c4_covariance": {
+      "passed": true,
+      "tr_hier": 0.0075,
+      "tr_sim": 0.0075,
+      "non_strict_order_holds": true,
+      "strict_improvement_observed": false,
+      "paper_claim_directly_tested": false
+    },
+    "c5_bisection": {
+      "passed": true,
+      "loglog_slope": 0.07765114435016009,
+      "iterations_per_log_tolerance": [
+        1.737177927613007,
+        1.6286043071371943,
+        1.5200306866613815,
+        1.5200306866613813,
+        1.5200306866613813
+      ],
+      "iters": [
+        8,
+        15,
+        21,
+        28,
+        35
+      ],
+      "paper_claim_directly_tested": false
+    },
+    "c6_chebyshev": {
+      "passed": true,
+      "chebyshev_matrix_recovery_err": 2.220446049250313e-16,
+      "idft_probe_err": 0.875,
+      "idft_path_tested": false,
+      "paper_claim_directly_tested": false
+    }
   }
 }

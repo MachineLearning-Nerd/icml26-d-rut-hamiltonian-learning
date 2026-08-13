@@ -1,4 +1,9 @@
-"""Verify D-RUT protocol claims (arXiv 2510.08419). numpy, CPU."""
+"""Run bounded numerical proxies related to D-RUT (arXiv 2510.08419).
+
+The checks are clean-room classical surrogates.  A ``passed`` field means that
+the local finite check passed; it does not establish the quantum protocol or
+the paper's theorem.
+"""
 from __future__ import annotations
 import json, os, sys
 import numpy as np
@@ -38,7 +43,8 @@ print(f"  Heisenberg slope: {slope_heis:.3f} (~-1), SQL slope: {slope_sql:.3f} (
 print(f"  errors (Heisenberg): {[round(e,4) for e in errors_heis]}")
 print(f"  -> {'PASS' if c1 else 'FAIL'} (Heisenberg O(1/T) better than SQL O(1/sqrt(T)))")
 results["c1_heisenberg"] = dict(passed=bool(c1), slope_heis=float(slope_heis),
-                                slope_sql=float(slope_sql))
+                                slope_sql=float(slope_sql),
+                                paper_claim_directly_tested=False)
 
 
 # ---------- c2: single-mode RMSE ε_G with O~(1/ε_G) ----------
@@ -53,7 +59,8 @@ slope2, _ = np.polyfit(np.log(Ts_arr), np.log(errs2), 1)
 c2 = -1.3 < slope2 < -0.5
 print(f"  Single-mode slope: {slope2:.3f} (~-1)")
 print(f"  -> {'PASS' if c2 else 'FAIL'}")
-results["c2_single_mode"] = dict(passed=bool(c2), slope=float(slope2))
+results["c2_single_mode"] = dict(passed=bool(c2), slope=float(slope2),
+                                  paper_claim_directly_tested=False)
 
 
 # ---------- c3: SPAM error bound ||δg|| ≤ (L_C/σ_min(K))||δβ|| ----------
@@ -76,7 +83,8 @@ print(f"  σ_min(K)={sigma_min_K:.4f}, L_C={L_C}")
 print(f"  max ||δg||={np.max(spam_norms):.4f}, max bound={(L_C/sigma_min_K)*np.max(dbn):.4f}")
 print(f"  -> {'PASS' if c3 else 'FAIL'}")
 results["c3_spam_bound"] = dict(passed=bool(c3), sigma_min_K=float(sigma_min_K),
-                                max_dg=float(np.max(spam_norms)), max_bound=float(np.max(bound)))
+                                max_dg=float(np.max(spam_norms)), max_bound=float(np.max(bound)),
+                                paper_claim_directly_tested=False)
 
 
 # ---------- c4: hierarchical Cov ≤ simultaneous Cov ----------
@@ -87,12 +95,21 @@ K_full = np.vstack([K_s, K_c])
 noise_var = 0.01
 Cov_hier = D.hierarchical_covariance(K_s, K_c, noise_var)
 Cov_sim = D.simultaneous_covariance(K_full, noise_var)
-# compare: trace(Cov_hier) <= trace(Cov_sim) (total variance)
-c4 = np.trace(Cov_hier) <= np.trace(Cov_sim) * 1.1
-print(f"  tr(Cov_hier)={np.trace(Cov_hier):.6f}, tr(Cov_sim)={np.trace(Cov_sim):.6f}")
-print(f"  -> {'PASS' if c4 else 'FAIL'} (hierarchical covariance dominated by simultaneous)")
-results["c4_covariance"] = dict(passed=bool(c4), tr_hier=float(np.trace(Cov_hier)),
-                                tr_sim=float(np.trace(Cov_sim)))
+# This finite setup checks only non-strict trace ordering.  Equality does not
+# establish the paper's strict worst-case efficiency improvement.
+tr_hier = np.trace(Cov_hier); tr_sim = np.trace(Cov_sim)
+c4 = tr_hier <= tr_sim * 1.1
+strict_improvement = tr_hier < tr_sim
+print(f"  tr(Cov_hier)={tr_hier:.6f}, tr(Cov_sim)={tr_sim:.6f}")
+print(f"  -> {'PASS' if c4 else 'FAIL'} (non-strict order; strict improvement: {strict_improvement})")
+results["c4_covariance"] = dict(
+    passed=bool(c4),
+    tr_hier=float(tr_hier),
+    tr_sim=float(tr_sim),
+    non_strict_order_holds=bool(c4),
+    strict_improvement_observed=bool(strict_improvement),
+    paper_claim_directly_tested=False,
+)
 
 
 # ---------- c5: bisection convergence O(log(1/ε)) ----------
@@ -104,11 +121,18 @@ for tol in tols:
     iters_list.append(iters)
 tols_arr = np.array(tols)
 slope5, _ = np.polyfit(np.log(1.0/tols_arr), np.log(np.array(iters_list, dtype=float)), 1)
-ratios5 = np.array(iters_list) / np.log(1.0/tols_arr); c5 = np.all(ratios5 > 0.5) and np.all(ratios5 < 5.0)
+ratios5 = np.array(iters_list) / np.log(1.0/tols_arr)
+c5 = np.all(ratios5 > 0.5) and np.all(ratios5 < 5.0)
 print(f"  bisection iters: {iters_list}")
-print(f"  log-log slope vs log(1/tol): {slope5:.3f} (~1 => O(log(1/eps)))")
+print(f"  log-log slope vs log(1/tol): {slope5:.3f} (near 0 is consistent with logarithmic iterations)")
 print(f"  -> {'PASS' if c5 else 'FAIL'}")
-results["c5_bisection"] = dict(passed=bool(c5), slope=float(slope5), iters=iters_list)
+results["c5_bisection"] = dict(
+    passed=bool(c5),
+    loglog_slope=float(slope5),
+    iterations_per_log_tolerance=[float(x) for x in ratios5],
+    iters=iters_list,
+    paper_claim_directly_tested=False,
+)
 
 
 # ---------- c6: Chebyshev-node sampling + IDFT reconstruction ----------
@@ -128,7 +152,13 @@ recovery_err_K = np.max(np.abs(g6 - g6_K))
 c6 = recovery_err_K < 1e-8
 print(f"  Chebyshev-node recovery error (K matrix): {recovery_err_K:.2e}")
 print(f"  -> {'PASS' if c6 else 'FAIL'} (exact recovery via Chebyshev nodes)")
-results["c6_chebyshev"] = dict(passed=bool(c6), recovery_err=float(recovery_err_K))
+results["c6_chebyshev"] = dict(
+    passed=bool(c6),
+    chebyshev_matrix_recovery_err=float(recovery_err_K),
+    idft_probe_err=float(recovery_err),
+    idft_path_tested=False,
+    paper_claim_directly_tested=False,
+)
 
 
 # ---------- summary ----------
@@ -137,5 +167,11 @@ passed = sum(1 for r in results.values() if r.get("passed"))
 for k_, r in results.items():
     print(f"  [{'PASS' if r.get('passed') else 'FAIL'}] {k_}")
 print(f"\n  {passed}/{len(results)} claims verified.")
-json.dump(results, open(os.path.join(OUT, "verdict.json"), "w"), indent=2)
+payload = {
+    "scope": "bounded_clean_room_proxies",
+    "paper_reproduction": "inconclusive",
+    "interpretation": "passed means the finite local check passed; it does not prove the paper claim.",
+    "claims": results,
+}
+json.dump(payload, open(os.path.join(OUT, "verdict.json"), "w"), indent=2)
 print("  wrote outputs/verdict.json")

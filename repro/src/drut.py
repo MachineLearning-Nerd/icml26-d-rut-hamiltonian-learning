@@ -1,10 +1,13 @@
-"""Clean-room D-RUT quantum Hamiltonian learning (arXiv 2510.08419). numpy, CPU.
+"""Clean-room numerical proxies for D-RUT (arXiv 2510.08419). numpy, CPU.
 
-The D-RUT protocol estimates Hamiltonian coefficients g from phase measurements.
+The paper's D-RUT protocol estimates Hamiltonian coefficients g from quantum
+phase measurements.  This module models the classical coefficient-recovery
+pieces only; it does not simulate quantum states, RPE, D-RUT circuits, or
+Trotterization.
 Math: sensing matrix K (Chebyshev-node design), estimated coefficients ĝ = K⁻¹·β,
 where β are measured phases with noise ~ 1/T (Heisenberg) or 1/√T (SQL).
 
-Claims verified:
+The verifier checks bounded proxies for:
   c1: O(1/ε) evolution-time scaling (Heisenberg limit)
   c2: single-mode RMSE ε_G with O~(1/ε_G) evolution
   c3: SPAM error bound ||δg|| <= (L_C/σ_min(K)) ||δβ||
@@ -50,7 +53,7 @@ def estimate_coefficients(g_true, K, noise_std, rng):
 
 
 def idft_recover(beta, n_modes):
-    """Inverse DFT coefficient recovery from phase samples (c6)."""
+    """Inverse DFT helper; the verifier does not claim an end-to-end IDFT test."""
     return np.fft.ifft(beta).real[:n_modes]
 
 

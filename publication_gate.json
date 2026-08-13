@@ -4,5 +4,12 @@
   "publication_gate_passed": true,
   "claims_verified": 6,
   "claims_total": 6,
-  "arxiv": "2510.08419"
+  "arxiv": "2510.08419",
+  "overall_verdict": "inconclusive",
+  "local_proxy_checks": "6/6",
+  "paper_reproduction_gate_passed": false,
+  "quantum_protocol_implemented": false,
+  "strict_hierarchical_improvement_observed": false,
+  "idft_path_tested": false,
+  "gate_notes": "Six finite NumPy proxy checks pass. C1-C3 use hand-injected noise and a fixed Chebyshev linear system; C4 only establishes a non-strict trace comparison and observes equality; C5 is generic bisection, not RPE; C6 verifies radial Chebyshev inversion but not end-to-end IDFT. The quantum D-RUT/RPE protocol, paper theorem, and full experiments remain unreproduced."
 }
