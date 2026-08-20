@@ -1,0 +1,34 @@
+{
+  "state_version": 1,
+  "repository": "MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning",
+  "paper": "arXiv:2510.08419v2",
+  "status": "INCONCLUSIVE_SIX_FINITE_CLASSICAL_PROXIES_C4_NON_STRICT_C6_IDFT_UNTESTED_NO_PAPER_CLAIMS_VERIFIED_NO_CURRENT_SCORE",
+  "normalization": {
+    "history_rewritten": true,
+    "canonical_name": "MachineLearning-Nerd",
+    "canonical_email": "MachineLearning-Nerd@users.noreply.github.com",
+    "public_branches": [
+      "main"
+    ],
+    "source_branch_mapping": "master -> main"
+  },
+  "recovery": {
+    "bundle_sha256": "24822b201ed725b770d06b7fbbc141d1d62209237a590cacde571f9645a0b29f",
+    "pre_normalization_head": "2b77a60fc18e914e74ed4fe3e61f9eadfe5f4f84",
+    "storage": "external recovery bundle created before history normalization"
+  },
+  "publication_boundary": {
+    "finite_proxies_passed": 6,
+    "paper_claims_verified": 0,
+    "claims_total": 6,
+    "evidence_points": 12,
+    "evidence_points_total": 12,
+    "current_score_claim": false,
+    "publication_allowed": false
+  },
+  "verification_contract": {
+    "local_verifier": "verify_final.py",
+    "fresh_clone_required": true,
+    "metadata_check_required": true
+  }
+}

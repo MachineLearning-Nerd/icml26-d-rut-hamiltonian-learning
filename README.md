@@ -1,147 +1,134 @@
-# D-RUT Hamiltonian Learning — Reproduction Audit
+# ICML 2026 Reproduction Audit: D-RUT Hamiltonian Learning
 
-This repository is an independent, clean-room audit of **Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation**. The paper proposes **D-RUT**, a quantum data-acquisition and classical coefficient-recovery protocol for finite-order continuous-variable Hamiltonians.
+Independent, claim-by-claim evidence audit of [Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation](https://arxiv.org/abs/2510.08419v2) by Xi Huang, Lixing Zhang, and Di Luo.
 
-The repository contains small NumPy surrogates for the classical recovery geometry and six bounded checks. They are useful sanity checks, but they are not a quantum simulation, an implementation of D-RUT/RPE, or a full reproduction of the paper's theorems and experiments.
+Repository: [MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning](https://github.com/MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning)
 
-| Resource | Link |
-| --- | --- |
-| Audit source | [arXiv:2510.08419v2](https://arxiv.org/abs/2510.08419v2), revised 2026-05-29 |
-| Paper HTML | [arXiv HTML v2](https://arxiv.org/html/2510.08419v2) |
-| OpenReview record | [tiF3tA5pau](https://openreview.net/forum?id=tiF3tA5pau) |
-| Repository target name | `MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning` |
+## Executive result
 
-## Current status
+The clean-room audit passes six bounded classical NumPy proxy checks, but it does not reproduce the paper-level quantum claims:
 
-**Overall result: partial / inconclusive.** The six finite local checks pass, but the paper-level reproduction is not established.
+- C1, C2, C3, C5, and the radial part of C6 pass their local proxy checks.
+- C4 observes only non-strict covariance ordering; the hierarchical and simultaneous traces are equal, so strict improvement is not observed.
+- C6 does not test end-to-end IDFT recovery; its IDFT probe error is 0.875 and is explicitly excluded from the pass criterion.
+- The quantum D-RUT/RPE/Fock-space protocol is not implemented.
+- The dossier therefore records 6/6 finite classical proxies, 0/6 paper claims independently verified, and no current competition score.
 
-The distinction is important:
+The full status is in [STATUS.md](STATUS.md), the claim-to-evidence production paths are in [CLAIM_EVIDENCE.md](CLAIM_EVIDENCE.md), and the machine-readable boundary is in [claims.json](claims.json) and [reproduction_verdicts.json](reproduction_verdicts.json).
 
-- **Local proxy check:** a small classical calculation produced the recorded value or trend.
-- **Paper claim reproduced:** the quantum protocol, assumptions, estimator, metric, and evidence path were independently reproduced.
+## Paper record
 
-This repository currently supports only the first category. It does not simulate Fock-space states, controlled D-RUT circuits, random unitary transformations, Robust Phase Estimation (RPE), Trotterization, or the paper's full numerical systems.
+- Title: Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation
+- Authors: Xi Huang, Lixing Zhang, and Di Luo
+- Paper: [arXiv 2510.08419v2](https://arxiv.org/abs/2510.08419v2)
+- Paper HTML: [arXiv HTML v2](https://arxiv.org/html/2510.08419v2)
+- OpenReview: [tiF3tA5pau](https://openreview.net/forum?id=tiF3tA5pau)
 
 ## What the paper does
 
-The paper considers finite-order bosonic Hamiltonians with unknown coefficients. Its core data-acquisition map is:
+The paper considers finite-order bosonic Hamiltonians with unknown coefficients. Its protocol:
 
-1. displace the system by a tunable complex parameter `β`;
-2. average over number-preserving random unitary transformations to isolate a number-conserving effective Hamiltonian;
-3. estimate its vacuum phase `C(β)` using ancilla measurements and Robust Phase Estimation;
-4. recover coefficients from polynomial responses using radial Chebyshev interpolation and angular inverse discrete Fourier transforms.
+1. displaces the system by a tunable complex parameter;
+2. averages over number-preserving random unitary transformations to isolate an effective Hamiltonian;
+3. estimates the vacuum phase using ancilla measurements and Robust Phase Estimation;
+4. recovers coefficients through radial Chebyshev interpolation and angular inverse discrete Fourier transforms.
 
 For a single-mode term, the response has the schematic form
 
-```text
-C(β) = Σ g_(p,q) (β*)^p β^q
-```
+    C(beta) = sum over p,q of g_(p,q) times conjugate(beta) to the p times beta to the q.
 
-For multi-mode Hamiltonians, the paper first isolates single-mode terms and then learns interaction clusters by setting bystander displacements to zero. It also gives a first-quantized extension for position/momentum coefficients.
+The paper targets Heisenberg-limited evolution time, a first-quantized extension, robustness to bounded SPAM errors, and a hierarchical multi-mode recovery strategy. It also discusses multi-mode and physical Hamiltonian-learning settings. This repository models only selected classical linear-algebra consequences.
 
-The paper's main theoretical targets include:
+This repository is an independent audit, not an author-maintained implementation.
 
-- Heisenberg-limited total evolution time `T ~ O(1/ε)` for bosonic coefficient RMSE;
-- first-quantized scaling `T ~ O(1/ε_G)` under a bounded reference-frame mismatch;
-- robustness to bounded state-preparation-and-measurement (SPAM) errors;
-- a hierarchical multi-mode recovery strategy with a strictly better worst-case error bound than the compared simultaneous strategy.
+## Claim ledger
 
-The paper's v2 abstract and theorem statements describe these as quantum Hamiltonian-learning results; the NumPy code here only models selected linear-algebra consequences.
+| Claim | Paper-level statement | Local evidence | Boundary |
+| --- | --- | --- | --- |
+| C1 | Heisenberg-limited evolution-time scaling | Hand-injected 1/T noise versus artificial 1/square-root-T SQL noise | VERIFIED_CLASSICAL_PROXY |
+| C2 | First-quantized coefficient scaling | Single-mode hand-injected 1/T linear recovery | VERIFIED_CLASSICAL_PROXY |
+| C3 | SPAM perturbation propagation bound | Fixed Chebyshev linear system with L_C = 1 and fifty perturbations | VERIFIED_LINEAR_PROXY |
+| C4 | Strict hierarchical statistical efficiency | Hierarchical trace 0.0075 equals simultaneous trace 0.0075 | NON_STRICT_PROXY_ONLY |
+| C5 | Logarithmic refinement dependence | Generic bisection iterations at five tolerances | VERIFIED_GENERIC_PROXY |
+| C6 | Chebyshev radial sampling plus angular IDFT recovery | Radial matrix error 2.22e-16; IDFT path explicitly untested | VERIFIED_RADIAL_PROXY_IDFT_UNTESTED |
 
-## What this repository contains
+The local pass status is not a paper reproduction status. No quantum theorem or end-to-end protocol claim is counted as independently verified.
 
-| Path | Purpose |
-| --- | --- |
-| `repro/src/drut.py` | Chebyshev sensing matrix, noisy linear coefficient recovery, covariance helpers, bisection helper, and an IDFT helper |
-| `repro/src/verify_drut.py` | Runs six bounded classical proxy checks and writes `outputs/verdict.json` |
-| `outputs/verdict.json` | Machine-readable proxy measurements and explicit paper-level boundary |
-| `outputs/verify_run.log` | Human-readable local verifier transcript and proxy summary |
-| `publication_gate.json` | Publication/documentation gate and limitations |
-| `.trackio/logbook/` | Existing local experiment logbook artifact |
-| `GATE_READY.md` | Human-readable documentation gate |
-| `BRANCH_AUDIT.md` | Branch and commit-identity migration record |
+## How each claim is produced
 
-There is no pinned paper PDF in this repository and no official author implementation. The arXiv links above are the paper source of record.
+The executable producer is [repro/src/verify_drut.py](repro/src/verify_drut.py), supported by [repro/src/drut.py](repro/src/drut.py). It uses deterministic NumPy seeds and writes [outputs/verdict.json](outputs/verdict.json).
 
-## Branch inventory
+1. C1 builds a Chebyshev sensing matrix, injects hand-designed 1/T and 1/square-root-T noise into a linear coefficient recovery, and compares log-log error slopes.
+2. C2 runs the same noisy linear recovery for one synthetic mode and records the slope under hand-injected 1/T noise.
+3. C3 perturbs a fixed sensing vector fifty times, solves the linearized inverse problem, and checks the local bound with a fixture L_C = 1.
+4. C4 compares hierarchical and simultaneous covariance traces for a small block fixture. The non-strict comparison passes, but equality means strict improvement is not observed.
+5. C5 runs a generic monotone bisection helper for tolerances from 10^-2 through 10^-10 and checks the logarithmic iteration pattern. It is not RPE.
+6. C6 inverts a degree-15 Chebyshev sensing matrix exactly. The IDFT helper is probed separately but is marked idft_path_tested = false and is not part of the pass criterion.
 
-The published repository has one intentional branch:
-
-| Branch | Purpose | State |
-| --- | --- | --- |
-| `main` | Documentation, classical proxies, outputs, and the D-RUT audit boundary | Canonical branch; no feature or experiment branches are retained |
-
-The original `master` branch was a one-commit initialization branch. It is retired during this cleanup. The migration and identity normalization are recorded in [`BRANCH_AUDIT.md`](BRANCH_AUDIT.md).
-
-## Claim-to-evidence ledger
-
-The table separates the paper's claims from the evidence actually produced here. The `passed` values in `outputs/verdict.json` mean that the stated finite proxy check passed; they do not mean that the corresponding quantum theorem was reproduced.
-
-| ID | Paper claim | How the paper produces the claim | Local evidence path | Local result and boundary |
-| --- | --- | --- | --- | --- |
-| C1 | Heisenberg-limited evolution-time scaling `T ~ O(1/ε)`. | D-RUT exposes a phase response, RPE estimates it, and the total evolution time is analyzed against target precision. | `estimate_coefficients()` adds noise `1/T` to a Chebyshev linear system and compares its finite slope with an artificial SQL `1/√T` path over `T={10,50,100,500,2000}`. | **Classical proxy passed:** slopes `-0.970` (Heisenberg surrogate) and `-0.462` (SQL surrogate). No D-RUT circuit or RPE was run. |
-| C2 | First-quantized coefficient RMSE scales with `T ~ O(1/ε_G)`. | Apply the first-quantized extension under its bounded reference-frame mismatch assumption and measure physical-coefficient RMSE. | The same noisy linear recovery is run for one synthetic mode with noise `1/T`. | **Classical proxy passed:** slope `-1.182`. No position/momentum Hamiltonian or reference-frame map was simulated. |
-| C3 | Bounded SPAM error propagates through coefficient recovery with a condition/Lipschitz bound. | Bound the response perturbation, propagate it through Chebyshev/Fourier inversion, and use the paper's `L_C` bound, which depends on degree, displacement radius, and coefficient magnitudes. | Fifty Gaussian perturbations are sent through a fixed `K`; the local fixture sets `L_C=1` and checks `||δg|| ≤ ||δβ||/σ_min(K)` with 1% tolerance. | **Finite linear proxy passed:** `σ_min(K)=2.4495`, max `||δg||=0.1366`, max bound `0.2129`. The paper's physical SPAM model and actual `L_C` derivation are not tested. |
-| C4 | Hierarchical multi-mode recovery is strictly more statistically efficient than simultaneous recovery in the paper's comparison. | Zero non-participating displacements, recover single-mode coefficients first, then interaction clusters, and compare the resulting worst-case covariance/error bounds. | `hierarchical_covariance()` is compared with a block simultaneous covariance using a five-row Chebyshev fixture. | **Non-strict proxy only:** traces are exactly equal (`0.0075` vs `0.0075`); non-strict order passes, but strict improvement is **not observed**. This is not evidence for the paper's strict claim. |
-| C5 | Bisection/RPE-style refinement has logarithmic iteration dependence on precision. | RPE uses a geometric evolution schedule and confidence-interval refinement; the paper's protocol includes measurement and phase-unwrapping details. | `bisection_search(x², 0.5, 0, 2)` is run at tolerances `10^-2` through `10^-10`; iterations are `[8,15,21,28,35]`, with iterations/log(1/tol) in `1.52–1.74`. | **Generic algorithm proxy passed:** log-log slope is `0.078` (near 0 is expected when iterations grow logarithmically). This is not an RPE implementation. |
-| C6 | Chebyshev radial sampling plus angular IDFT recovers Hamiltonian coefficients. | Query `C(r,θ)` at Chebyshev radial nodes, solve the radial polynomial system, then use angular samples and inverse DFT to recover `g_(p,q)`. | A degree-15 Chebyshev sensing matrix is inverted exactly for a synthetic cosine polynomial. The `idft_recover()` helper is probed but is not part of the pass criterion. | **Radial Chebyshev proxy passed:** matrix recovery error `2.22e-16`; the IDFT probe error is `0.875` and `idft_path_tested=false`. End-to-end Chebyshev-plus-IDFT recovery is not verified. |
-
-### Evidence production flow
-
-```text
-synthetic coefficients + Chebyshev design
-                 │
-                 ├── noisy linear recovery → C1, C2, C3
-                 ├── block covariance comparison → C4
-                 ├── generic monotone bisection → C5
-                 └── Chebyshev matrix inversion → C6 radial proxy
-
-all finite checks → outputs/verdict.json
-```
-
-The quantum path described by the paper is not present in this flow. There is no implementation of displacement gates, RUT averaging, ancilla X/Y measurement, RPE, Fock-space evolution, or Trotter error control.
+The quantum path described by the paper is not in this flow: there is no displacement gate, RUT averaging, ancilla measurement, RPE, Fock-space evolution, or Trotter-error implementation.
 
 ## Reproduction boundary
 
-The current limitations are explicit:
+The concrete limitations are:
 
-1. The code is classical NumPy linear algebra; it does not implement or simulate the D-RUT quantum protocol.
-2. Noise laws `1/T` and `1/√T` are injected by hand. They are not estimated from RPE measurement outcomes.
-3. The SPAM check uses `L_C=1` for a linear fixture rather than evaluating the paper's degree/radius/coefficient-dependent Lipschitz bound.
-4. The covariance fixture produces equality, so it does not reproduce the paper's strict hierarchical-efficiency advantage.
-5. The bisection helper is not the paper's RPE schedule or phase-unwrapping algorithm.
-6. C6 verifies only radial Chebyshev matrix recovery; the IDFT helper is explicitly not tested end to end.
-7. No paper-scale harmonic oscillator, Kerr oscillator, Bose–Hubbard dimer, multi-mode, first-quantized, or SPAM sweep is reproduced.
+1. The code is classical NumPy linear algebra; it does not simulate the D-RUT quantum protocol.
+2. The 1/T and 1/square-root-T noise laws are injected by hand rather than estimated from RPE measurements.
+3. The SPAM check uses L_C = 1 for a linear fixture rather than the paper's degree/radius/coefficient-dependent bound.
+4. C4 produces equality and cannot support the paper's strict hierarchical-efficiency claim.
+5. The C5 bisection helper is not the paper's RPE schedule or phase-unwrapping algorithm.
+6. C6 verifies only radial Chebyshev matrix recovery; end-to-end angular IDFT recovery is not verified.
+7. No paper-scale oscillator, multi-mode, first-quantized, SPAM, or quantum simulation sweep is reproduced.
 
-The appropriate current label is **bounded classical proxy evidence**, not **paper reproduced**.
+The appropriate current label is bounded classical proxy evidence, not paper reproduced.
 
-## Run the local audit
+## Reproduce the local audit
 
 From the repository root:
 
-```bash
-python3 repro/src/verify_drut.py
-```
+    python3 repro/src/verify_drut.py
 
-The command is CPU-only and writes `outputs/verdict.json`. It requires Python 3 and NumPy.
+The command is CPU-only and writes outputs/verdict.json. It requires Python 3 and NumPy.
+
+## Repository contents
+
+| Path | Purpose |
+| --- | --- |
+| [repro/src/drut.py](repro/src/drut.py) | Chebyshev sensing matrix, noisy recovery, covariance helpers, bisection, and IDFT helper |
+| [repro/src/verify_drut.py](repro/src/verify_drut.py) | Six bounded classical proxy checks |
+| [outputs/verdict.json](outputs/verdict.json) | Machine-readable metrics and explicit paper-level flags |
+| [outputs/verify_run.log](outputs/verify_run.log) | Recorded verifier transcript |
+| [publication_gate.json](publication_gate.json) | Conservative publication/documentation gate |
+| [GATE_READY.md](GATE_READY.md) | Gate receipt and limitations |
+| [STATUS.md](STATUS.md) | Current reproduction boundary |
+| [CLAIM_EVIDENCE.md](CLAIM_EVIDENCE.md) | Claim-to-evidence production ledger |
+| [SOURCE_AUDIT.md](SOURCE_AUDIT.md) | Paper/source/implementation mapping |
+| [ENVIRONMENT.md](ENVIRONMENT.md) | Runtime and rerun contract |
+| [REPORT.md](REPORT.md) | Interpretation and publication boundary |
+| [BRANCH_AUDIT.md](BRANCH_AUDIT.md) | Legacy branch mapping and identity contract |
+| [verify_final.py](verify_final.py) | Static final-state verifier |
+
+## Branches
+
+The source repository contained one legacy branch, master. It is normalized to main. There are no master or orx branches in the published repository.
+
+| Clean branch | Former ref | Purpose |
+| --- | --- | --- |
+| [main](https://github.com/MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning/tree/main) | master | Canonical documentation, classical proxies, outputs, and D-RUT audit boundary |
 
 ## Citation
 
-If you use the paper or this audit, please cite the original work:
+If this audit is useful, please cite the paper:
 
-```bibtex
-@article{huang2025continuous,
-  title={Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation},
-  author={Huang, Xi and Zhang, Lixing and Luo, Di},
-  journal={arXiv preprint arXiv:2510.08419},
-  year={2025},
-  doi={10.48550/arXiv.2510.08419},
-  url={https://arxiv.org/abs/2510.08419}
-}
-```
+    @article{huang2025continuous,
+      title = {Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation},
+      author = {Huang, Xi and Zhang, Lixing and Luo, Di},
+      journal = {arXiv preprint arXiv:2510.08419},
+      year = {2025},
+      doi = {10.48550/arXiv.2510.08419}
+    }
 
-This repository is an independent audit and is not an author-maintained implementation.
+Repository citation metadata is also provided in [CITATION.cff](CITATION.cff).
 
 ## Thank you
 
-Thank you to **Xi Huang, Lixing Zhang, and Di Luo** for developing D-RUT, connecting quantum measurement design with structured polynomial recovery, and making the protocol's Heisenberg-limit, SPAM, hierarchical-recovery, and first-quantized goals explicit enough to audit. This repository is intended to credit the original work while keeping classical proxy checks separate from the quantum claims they do not establish.
+Thank you to Xi Huang, Lixing Zhang, and Di Luo for developing D-RUT, connecting quantum measurement design with structured polynomial recovery, and making the protocol's Heisenberg-limit, SPAM, hierarchical-recovery, and first-quantized goals explicit enough to audit. This repository credits the original work while keeping classical proxy checks separate from the quantum claims they do not establish.

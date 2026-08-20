@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+message: "If you use this reproduction audit, please cite the repository and the paper."
+title: "ICML 2026 D-RUT Hamiltonian Learning Reproduction Audit"
+version: 1.0.0
+date-released: 2026-08-20
+authors:
+  - name: MachineLearning-Nerd
+repository-code: "https://github.com/MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning"
+url: "https://arxiv.org/abs/2510.08419"
+keywords:
+  - Hamiltonian learning
+  - D-RUT
+  - Robust Phase Estimation
+  - clean-room reproduction
+  - ICML 2026
+preferred-citation:
+  type: article
+  title: "Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation"
+  authors:
+    - family-names: Huang
+      given-names: Xi
+    - family-names: Zhang
+      given-names: Lixing
+    - family-names: Luo
+      given-names: Di
+  year: 2025
+  journal: "arXiv preprint arXiv:2510.08419"
+  doi: "10.48550/arXiv.2510.08419"

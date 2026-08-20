@@ -1,0 +1,37 @@
+{
+  "repository": "MachineLearning-Nerd/icml26-d-rut-hamiltonian-learning",
+  "paper": "arXiv:2510.08419v2",
+  "audit_status": "INCONCLUSIVE_SIX_FINITE_CLASSICAL_PROXIES_C4_NON_STRICT_C6_IDFT_UNTESTED_NO_PAPER_CLAIMS_VERIFIED_NO_CURRENT_SCORE",
+  "claims": {
+    "C1": "VERIFIED_CLASSICAL_PROXY",
+    "C2": "VERIFIED_CLASSICAL_PROXY",
+    "C3": "VERIFIED_LINEAR_PROXY",
+    "C4": "NON_STRICT_PROXY_ONLY",
+    "C5": "VERIFIED_GENERIC_PROXY",
+    "C6": "VERIFIED_RADIAL_PROXY_IDFT_UNTESTED"
+  },
+  "evidence": {
+    "finite_proxies_passed": 6,
+    "paper_claims_verified": 0,
+    "claims_total": 6,
+    "points": 12,
+    "points_total": 12,
+    "historical_score": null,
+    "current_score": null,
+    "current_score_claim": false,
+    "publication_allowed": false
+  },
+  "raw_records": {
+    "verification": "outputs/verdict.json",
+    "run_log": "outputs/verify_run.log",
+    "gate": "publication_gate.json"
+  },
+  "limitations": [
+    "the quantum D-RUT/RPE/Fock-space protocol is not implemented",
+    "C1 and C2 use hand-injected noise laws",
+    "C4 observes equality rather than strict improvement",
+    "C5 is generic bisection, not RPE",
+    "C6 radial recovery passes but IDFT is untested",
+    "no current live-judge score is available"
+  ]
+}

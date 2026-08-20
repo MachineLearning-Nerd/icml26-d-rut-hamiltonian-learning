@@ -1,0 +1,80 @@
+{
+  "paper": {
+    "title": "Continuous Variable Hamiltonian Learning at Heisenberg Limit via Displacement-Random Unitary Transformation",
+    "arxiv": "2510.08419",
+    "openreview": "tiF3tA5pau",
+    "venue": "ICML 2026",
+    "authors": [
+      "Xi Huang",
+      "Lixing Zhang",
+      "Di Luo"
+    ]
+  },
+  "audit": {
+    "type": "clean_room_classical_proxy_audit",
+    "status": "INCONCLUSIVE_SIX_FINITE_CLASSICAL_PROXIES_C4_NON_STRICT_C6_IDFT_UNTESTED_NO_PAPER_CLAIMS_VERIFIED_NO_CURRENT_SCORE",
+    "finite_proxies_passed": 6,
+    "paper_claims_verified": 0,
+    "claims_total": 6,
+    "evidence_points": 12,
+    "evidence_points_total": 12,
+    "current_score_claim": false,
+    "publication_allowed": false
+  },
+  "claims": [
+    {
+      "id": "C1",
+      "paper_anchor": "Heisenberg-limited evolution-time scaling",
+      "status": "VERIFIED_CLASSICAL_PROXY",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C1 using drut.py::estimate_coefficients",
+      "result": "hand-injected 1/T slope is -0.970 versus artificial SQL slope -0.462",
+      "scope": "classical linear recovery; no D-RUT or RPE"
+    },
+    {
+      "id": "C2",
+      "paper_anchor": "first-quantized coefficient scaling",
+      "status": "VERIFIED_CLASSICAL_PROXY",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C2 using one-mode hand-injected noisy recovery",
+      "result": "slope is -1.182",
+      "scope": "no position/momentum Hamiltonian or reference-frame map"
+    },
+    {
+      "id": "C3",
+      "paper_anchor": "SPAM perturbation propagation bound",
+      "status": "VERIFIED_LINEAR_PROXY",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C3 using fixed Chebyshev sensing matrix and L_C=1",
+      "result": "sigma-min(K)=2.4495, max perturbation 0.1366, max bound 0.2129",
+      "scope": "fixed linear fixture, not physical SPAM or paper L_C derivation"
+    },
+    {
+      "id": "C4",
+      "paper_anchor": "strict hierarchical statistical efficiency",
+      "status": "NON_STRICT_PROXY_ONLY",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C4 comparing hierarchical_covariance and simultaneous_covariance",
+      "result": "both traces equal 0.0075; non-strict ordering holds but strict improvement is false",
+      "scope": "does not support the strict paper claim"
+    },
+    {
+      "id": "C5",
+      "paper_anchor": "logarithmic refinement dependence",
+      "status": "VERIFIED_GENERIC_PROXY",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C5 using generic bisection_search",
+      "result": "iterations are 8, 15, 21, 28, and 35 with log-log slope 0.078",
+      "scope": "generic bisection, not RPE"
+    },
+    {
+      "id": "C6",
+      "paper_anchor": "Chebyshev radial plus angular IDFT coefficient recovery",
+      "status": "VERIFIED_RADIAL_PROXY_IDFT_UNTESTED",
+      "evidence_points": 2,
+      "production_path": "repro/src/verify_drut.py::C6 using Chebyshev matrix inversion and a separate IDFT probe",
+      "result": "radial matrix error 2.22e-16; IDFT probe error 0.875 and idft_path_tested=false",
+      "scope": "radial proxy only; no end-to-end angular recovery"
+    }
+  ]
+}
